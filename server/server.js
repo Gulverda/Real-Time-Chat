@@ -5,15 +5,15 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import Message from "./models/Message.js";
+import authRoutes from "./routes/auth.js";
+import { protect } from "./middleware/authMiddleware.js";
+
 
 dotenv.config();
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173", // React frontend URL
-    methods: ["GET", "POST"],
-  },
+  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
 });
 
 // Middleware
@@ -21,32 +21,52 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error(err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongoose.connection.on("connected", () => console.log("MongoDB Connected ✅"));
+mongoose.connection.on("error", (err) => console.error("MongoDB Connection Error:", err));
+mongoose.connection.on("disconnected", () => console.log("MongoDB Disconnected ❌"));
 
 // Socket.IO Setup
 io.on("connection", (socket) => {
-  console.log("User Connected:", socket.id);
+  console.log(`User Connected: ${socket.id}`);
 
   // Listen for messages
-  socket.on("sendMessage", async (data) => {
-    const { username, message } = data;
-    const newMessage = new Message({ username, message });
-    await newMessage.save();
-
-    io.emit("receiveMessage", newMessage); // Send message to all clients
+  socket.on("sendMessage", async ({ username, message }) => {
+    try {
+      const newMessage = new Message({ username, message });
+      await newMessage.save();
+      io.emit("receiveMessage", newMessage); // Send to all clients
+    } catch (err) {
+      console.error("Error saving message:", err);
+    }
   });
 
+  // Typing Indicator Feature
+  socket.on("typing", (username) => {
+    socket.broadcast.emit("userTyping", username); // Notify others
+  });
+
+  // Disconnect
   socket.on("disconnect", () => {
-    console.log("User Disconnected:", socket.id);
+    console.log(`User Disconnected: ${socket.id}`);
   });
 });
 
 // Routes
-app.get("/api/messages", async (req, res) => {
-  const messages = await Message.find().sort({ timestamp: -1 }).limit(20);
-  res.json(messages.reverse());
+app.use("/api/auth", authRoutes);
+
+// Fetch Previous Messages
+app.get("/api/messages", protect, async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ createdAt: -1 }).limit(20);
+    res.json(messages.reverse()); // Send in correct order
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch messages" });
+  }
 });
 
 // Start Server

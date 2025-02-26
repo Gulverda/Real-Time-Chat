@@ -6,7 +6,8 @@ const MessageSchema = new mongoose.Schema(
     message: String,
     timestamp: { type: Date, default: Date.now },
   },
-  { collection: "messages" }
+  { collection: "messages" },
+  { timestamps: true }
 );
 
 export default mongoose.model("Message", MessageSchema);
