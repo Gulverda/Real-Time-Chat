@@ -1,51 +1,66 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import io from "socket.io-client";
 import axios from "axios";
+import AuthContext from "./context/AuthContext";
 
 const socket = io("http://localhost:5000");
 
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("User" + Math.floor(Math.random() * 100));
+    const { user } = useContext(AuthContext);
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
 
-  // Fetch previous messages
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/messages").then((res) => {
-      setMessages(res.data);
-    });
+    useEffect(() => {
+        if (!user) return;
 
-    socket.on("receiveMessage", (data) => {
-      setMessages((prev) => [...prev, data]);
-    });
+        axios
+            .get("http://localhost:5000/api/messages", {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            })
+            .then((res) => setMessages(res.data))
+            .catch((err) => console.error("Error fetching messages:", err));
 
-    return () => {
-      socket.off("receiveMessage");
+        socket.on("receiveMessage", (data) => {
+            setMessages((prev) => [...prev, data]);
+        });
+
+        return () => {
+            socket.off("receiveMessage");
+        };
+    }, [user]); // Re-run effect when `user` changes
+
+    const sendMessage = () => {
+        if (!message.trim()) return;
+        if (!user) return alert("You must be logged in to send messages.");
+
+        socket.emit("sendMessage", { username: user.username, message });
+        setMessage("");
     };
-  }, []);
 
-  const sendMessage = () => {
-    if (message.trim()) {
-      const newMessage = { username, message };
-      socket.emit("sendMessage", newMessage);
-      setMessage("");
-    }
-  };
+    if (!user) return <h2>Please Login to Chat</h2>;
 
-  return (
-    <div>
-      <h2>Realtime Chat</h2>
-      <div style={{ height: "300px", overflowY: "auto" }}>
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.username}: </strong> {msg.message}
-          </div>
-        ))}
-      </div>
-      <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type a message..." />
-      <button onClick={sendMessage}>Send</button>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Realtime Chat</h2>
+            <div style={{ height: "300px", overflowY: "auto", border: "1px solid #ccc", padding: "10px" }}>
+                {messages.length > 0 ? (
+                    messages.map((msg, index) => (
+                        <div key={index}>
+                            <strong>{msg.username}: </strong> {msg.message}
+                        </div>
+                    ))
+                ) : (
+                    <p>No messages yet.</p>
+                )}
+            </div>
+            <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type a message..."
+            />
+            <button onClick={sendMessage}>Send</button>
+        </div>
+    );
 };
 
 export default Chat;
