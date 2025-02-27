@@ -3,7 +3,8 @@ import io from "socket.io-client";
 import axios from "axios";
 import AuthContext from "./context/AuthContext";
 
-const socket = io("http://localhost:5000");
+const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
+const socket = io(API_URL);
 
 const Chat = () => {
     const { user } = useContext(AuthContext);
@@ -14,7 +15,7 @@ const Chat = () => {
         if (!user) return;
 
         axios
-            .get("http://localhost:5000/api/messages", {
+            .get(`${API_URL}/api/messages`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             })
             .then((res) => setMessages(res.data))
@@ -27,7 +28,7 @@ const Chat = () => {
         return () => {
             socket.off("receiveMessage");
         };
-    }, [user]); // Re-run effect when `user` changes
+    }, [user]);
 
     const sendMessage = () => {
         if (!message.trim()) return;

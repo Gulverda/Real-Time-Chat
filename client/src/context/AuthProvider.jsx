@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
 
+const API_URL = import.meta.VITE_API || "http://localhost:5000";
+
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,7 +17,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
 
-        axios.get("http://localhost:5000/api/auth/verify", {
+        axios.get(`${API_URL}/api/auth/verify`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => setUser(res.data))
