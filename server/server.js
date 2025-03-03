@@ -8,13 +8,13 @@ import Message from "./models/Message.js";
 import authRoutes from "./routes/auth.js";
 import { protect } from "./middleware/authMiddleware.js";
 
-
 dotenv.config();
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
 });
+const onlineUsers = new Map();
 
 // Middleware
 app.use(cors());
@@ -34,6 +34,26 @@ mongoose.connection.on("disconnected", () => console.log("MongoDB Disconnected â
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
+  socket.on("sendPrivateMessage", async ({ sender, recipient, message }) => {
+    try {
+      const newMessage = new Message({ username: sender, recipient, message });
+      await newMessage.save();
+      
+      io.to(onlineUsers.get(recipient)).emit("receivePrivateMessage", newMessage);
+      socket.emit("receivePrivateMessage", newMessage); // Also send to sender
+    } catch (err) {
+      console.error("Error sending private message:", err);
+    }
+  });
+  
+
+  // User joins chat
+  socket.on("userJoined", (username) => {
+    if (!username) return;
+    onlineUsers.set(socket.id, username);
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
+  });
+
   // Listen for messages
   socket.on("sendMessage", async ({ username, message }) => {
     try {
@@ -45,14 +65,22 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Typing Indicator Feature
-  socket.on("typing", (username) => {
-    socket.broadcast.emit("userTyping", username); // Notify others
+  // Handle user disconnect
+  socket.on("disconnect", () => {
+    onlineUsers.delete(socket.id);
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
+    console.log(`User Disconnected: ${socket.id}`);
   });
 
-  // Disconnect
-  socket.on("disconnect", () => {
-    console.log(`User Disconnected: ${socket.id}`);
+  // User leaves chat explicitly
+  socket.on("userLeft", (username) => {
+    for (let [key, value] of onlineUsers) {
+      if (value === username) {
+        onlineUsers.delete(key);
+        break;
+      }
+    }
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
   });
 });
 
@@ -68,6 +96,24 @@ app.get("/api/messages", protect, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch messages" });
   }
 });
+
+app.get("/api/messages/:username/:recipient", protect, async (req, res) => {
+  const { username, recipient } = req.params;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { username, recipient },
+        { username: recipient, recipient: username },
+      ],
+    }).sort({ createdAt: 1 });
+
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch private messages" });
+  }
+});
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;
