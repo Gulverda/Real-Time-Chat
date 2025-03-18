@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
+import SearchUsers from "../SearchUsers";
 
 const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
 const socket = io(API_URL);
@@ -12,25 +13,23 @@ const Chat = () => {
     const [message, setMessage] = useState("");
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [recipient, setRecipient] = useState("");
+    const [sentMessages, setSentMessages] = useState(new Set()); // Track sent messages
 
     useEffect(() => {
         if (!user) return;
 
-        socket.emit("userJoined", user.username);
-
-        socket.on("updateOnlineUsers", (users) => {
-            setOnlineUsers(users);
-        });
-
-        socket.on("receivePrivateMessage", (data) => {
-            setMessages((prev) => [...prev, data]);
-        });
-
-        return () => {
-            socket.emit("userLeft", user.username);
-            socket.off("receivePrivateMessage");
-            socket.off("updateOnlineUsers");
+        const fetchFriends = async () => {
+            try {
+                const res = await axios.get(`${API_URL}/api/friends`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+                });
+                setOnlineUsers(res.data); 
+            } catch (err) {
+                console.error("Error fetching friends:", err);
+            }
         };
+
+        fetchFriends();
     }, [user]);
 
     const fetchPrivateMessages = async (recipient) => {
@@ -52,6 +51,7 @@ const Chat = () => {
 
         socket.emit("sendPrivateMessage", { sender: user.username, recipient, message });
         setMessage("");
+        setSentMessages((prev) => new Set(prev).add(recipient));
     };
 
     if (!user) return <h2 className="text-center text-xl font-semibold">Please Login to Chat</h2>;
@@ -59,35 +59,66 @@ const Chat = () => {
     return (
         <div className="max-w-lg mx-auto p-4 bg-white shadow-lg rounded-lg">
             <h2 className="text-2xl font-bold text-center mb-4">Private Messages</h2>
+            
+            {/* Friends List Section */}
+            <div className="mb-4 p-3 border border-gray-300 rounded-lg bg-gray-100">
+                <h4 className="text-xl font-semibold mb-2">Friends:</h4>
+                {onlineUsers.length > 0 ? (
+                    onlineUsers.map((friend) => (
+                        <div
+                            key={friend._id} 
+                            onClick={() => fetchPrivateMessages(friend.username)}
+                            className="cursor-pointer text-blue-600 hover:underline flex items-center"
+                        >
+                            <span>👤 {friend.username}</span> 
+                            {sentMessages.has(friend.username) && (
+                                <span className="w-2.5 h-2.5 rounded-full bg-red-500 ml-2"></span>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-gray-500">No friends yet.</p>
+                )}
+            </div>
+            <SearchUsers />
 
             {/* Online Users Section */}
-            <div className="mb-4 p-3 border border-gray-300 rounded-lg bg-gray-100">
+            {/* <div className="mb-4 p-3 border border-gray-300 rounded-lg bg-gray-100">
                 <h4 className="text-xl font-semibold mb-2">Online Users:</h4>
                 {onlineUsers.length > 0 ? (
-                    onlineUsers.filter((username) => username !== user.username).map((username, index) => (
-                        <div 
-                            key={index} 
-                            onClick={() => fetchPrivateMessages(username)} 
-                            className="cursor-pointer text-blue-600 hover:underline"
+                    onlineUsers.filter((friend) => friend.username !== user.username).map((friend) => (
+                        <div
+                            key={friend._id}
+                            onClick={() => fetchPrivateMessages(friend.username)}
+                            className="cursor-pointer text-blue-600 hover:underline flex items-center"
                         >
-                            📩 {username}
+                            <span>📩 {friend.username}</span> 
+                            {sentMessages.has(friend.username) && (
+                                <span className="w-2.5 h-2.5 rounded-full bg-red-500 ml-2"></span>
+                            )}
                         </div>
                     ))
                 ) : (
                     <p className="text-gray-500">No users online.</p>
                 )}
-            </div>
+            </div> */}
 
             {/* Chat Messages */}
             <div className="h-64 overflow-y-auto border border-gray-300 p-3 rounded-lg mb-4 bg-gray-50">
                 {messages.length > 0 ? (
                     messages.map((msg, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className={`mb-2 ${msg.username === user.username ? "text-right" : "text-left"}`}
                         >
-                            <strong className={`text-sm ${msg.username === user.username ? "text-blue-600" : "text-gray-700"}`}>{msg.username}: </strong>
-                            <span className={`px-2 py-1 rounded-lg inline-block ${msg.username === user.username ? "bg-blue-100" : "bg-gray-200"}`}>{msg.message}</span>
+                            <strong className={`text-sm ${msg.username === user.username ? "text-blue-600" : "text-gray-700"}`}>
+                                {msg.username}:
+                            </strong>
+                            <span
+                                className={`px-2 py-1 rounded-lg inline-block ${msg.username === user.username ? "bg-blue-100" : "bg-gray-200"}`}
+                            >
+                                {msg.message}
+                            </span>
                         </div>
                     ))
                 ) : (
@@ -103,8 +134,7 @@ const Chat = () => {
                     placeholder="Type a message..."
                     className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
-                <button 
-                    onClick={sendPrivateMessage} 
+                <button onClick={sendPrivateMessage}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
                     Send
