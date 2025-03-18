@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import Message from "./models/Message.js";
 import authRoutes from "./routes/auth.js";
 import { protect } from "./middleware/authMiddleware.js";
+import friendRoutes from "./routes/friends.js"
 
 dotenv.config();
 const app = express();
@@ -65,7 +66,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle user disconnect
+  // Disconnect
   socket.on("disconnect", () => {
     onlineUsers.delete(socket.id);
     io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
@@ -86,6 +87,8 @@ io.on("connection", (socket) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/friends", friendRoutes);
+
 
 // Fetch Previous Messages
 app.get("/api/messages", protect, async (req, res) => {
