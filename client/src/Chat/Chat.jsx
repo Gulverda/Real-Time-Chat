@@ -56,19 +56,17 @@ const Chat = () => {
 
     if (!user) return <h2 className="text-center text-xl font-semibold">Please Login to Chat</h2>;
 
-    return (
-        <div className="max-w-lg mx-auto p-4 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-bold text-center mb-4">Private Messages</h2>
-            
-            {/* Friends List Section */}
-            <div className="mb-4 p-3 border border-gray-300 rounded-lg bg-gray-100">
-                <h4 className="text-xl font-semibold mb-2">Friends:</h4>
+return (
+        <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg flex h-[500px]">
+            {/* Friends List */}
+            <div className="w-1/3 p-3 border-r border-gray-300 bg-gray-100 overflow-y-auto">
+                <h4 className="text-xl font-semibold mb-2">Friends</h4>
                 {onlineUsers.length > 0 ? (
                     onlineUsers.map((friend) => (
                         <div
                             key={friend._id} 
                             onClick={() => fetchPrivateMessages(friend.username)}
-                            className="cursor-pointer text-blue-600 hover:underline flex items-center"
+                            className="cursor-pointer text-blue-600 hover:underline flex items-center p-2 rounded-md hover:bg-gray-200"
                         >
                             <span>👤 {friend.username}</span> 
                             {sentMessages.has(friend.username) && (
@@ -79,9 +77,12 @@ const Chat = () => {
                 ) : (
                     <p className="text-gray-500">No friends yet.</p>
                 )}
+                <SearchUsers />
             </div>
-            <SearchUsers />
 
+
+
+            
             {/* Online Users Section */}
             {/* <div className="mb-4 p-3 border border-gray-300 rounded-lg bg-gray-100">
                 <h4 className="text-xl font-semibold mb-2">Online Users:</h4>
@@ -103,42 +104,47 @@ const Chat = () => {
                 )}
             </div> */}
 
-            {/* Chat Messages */}
-            <div className="h-64 overflow-y-auto border border-gray-300 p-3 rounded-lg mb-4 bg-gray-50">
-                {messages.length > 0 ? (
-                    messages.map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`mb-2 ${msg.username === user.username ? "text-right" : "text-left"}`}
-                        >
-                            <strong className={`text-sm ${msg.username === user.username ? "text-blue-600" : "text-gray-700"}`}>
-                                {msg.username}:
-                            </strong>
-                            <span
-                                className={`px-2 py-1 rounded-lg inline-block ${msg.username === user.username ? "bg-blue-100" : "bg-gray-200"}`}
-                            >
-                                {msg.message}
-                            </span>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500">No messages yet.</p>
-                )}
-            </div>
+            {/* Chat Section */}
+            <div className="w-2/3 flex flex-col p-4">
+                <h2 className="text-2xl font-bold text-center mb-4">Private Messages</h2>
 
-            {/* Input and Send Button */}
-            <div className="flex items-center gap-2">
-                <input
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <button onClick={sendPrivateMessage}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                    Send
-                </button>
+                {/* Chat Messages */}
+                <div className="flex-1 overflow-y-auto border border-gray-300 p-3 rounded-lg bg-gray-50">
+                    {messages.length > 0 ? (
+                        messages.map((msg, index) => (
+                            <div
+                                key={index}
+                                className={`mb-2 ${msg.username === user.username ? "text-right" : "text-left"}`}
+                            >
+                                <strong className={`text-sm ${msg.username === user.username ? "text-blue-600" : "text-gray-700"}`}>
+                                    {msg.username}:
+                                </strong>
+                                <span
+                                    className={`px-2 py-1 rounded-lg inline-block ${msg.username === user.username ? "bg-blue-100" : "bg-gray-200"}`}
+                                >
+                                    {msg.message}
+                                </span>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No messages yet.</p>
+                    )}
+                </div>
+
+                {/* Input and Send Button */}
+                <div className="flex items-center gap-2 mt-2">
+                    <input
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type a message..."
+                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <button onClick={sendPrivateMessage}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                    >
+                        Send
+                    </button>
+                </div>
             </div>
         </div>
     );
