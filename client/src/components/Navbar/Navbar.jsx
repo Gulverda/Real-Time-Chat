@@ -12,11 +12,11 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <header className="flex w-full items-center bg-[#5D5FEF]">
+    <header className="flex justify-center w-full items-center bg-[#5D5FEF]">
       <div className="container flex justify-center max-w-[1440px]">
         <div className="relative flex items-center justify-between w-full">
           {/* Logo */}
-          <div className="w-full max-w-full px-4">
+          <div className="px-4">
             <Link to="/" className="block w-full py-5">
               <img
                 src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-white.svg"

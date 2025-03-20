@@ -6,8 +6,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import Message from "./models/Message.js";
 import authRoutes from "./routes/auth.js";
-import { protect } from "./middleware/authMiddleware.js";
 import friendRoutes from "./routes/friends.js"
+import { protect } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 const app = express();

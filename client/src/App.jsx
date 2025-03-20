@@ -14,7 +14,7 @@ function App() {
     return (
         <Router>
             <Navbar />
-            <div className="App">
+            <div className="App flex w-full justify-center">
                 <Routes>
                     <Route path="/" element={user ? <Chat /> : <Navigate to="/login" />} />
                     <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
