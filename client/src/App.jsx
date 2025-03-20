@@ -4,19 +4,17 @@ import Chat from "./Chat/Chat";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";  // Import Register component
 import AuthContext from "./context/AuthContext";
+import Navbar from "./components/Navbar/Navbar";
 
 function App() {
-    const { user, loading, logout } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
 
     if (loading) return <h2>Loading...</h2>;
 
     return (
         <Router>
+            <Navbar />
             <div className="App">
-                {user && 
-                <button onClick={logout} className="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200">
-                    Logout
-                </button>}
                 <Routes>
                     <Route path="/" element={user ? <Chat /> : <Navigate to="/login" />} />
                     <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
