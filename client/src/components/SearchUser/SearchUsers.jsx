@@ -64,9 +64,21 @@ const SearchUsers = () => {
       await axios.post(`${API_URL}/api/friends/accept/${userId}`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      setReceivedRequests((prev) => prev.filter((req) => req.user?._id !== userId));
+      setReceivedRequests((prev) => prev.filter((req) => req._id !== userId));
     } catch (error) {
       console.error("Error accepting friend request:", error);
+    }
+  };
+
+  const handleRejectRequest = async (friendId) => {
+    try {
+      await axios.delete(`${API_URL}/api/friends/reject/${friendId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      setReceivedRequests((prev) => prev.filter((req) => req._id !== friendId));
+    } catch (error) {
+      console.error("Error rejecting request:", error);
     }
   };
 
@@ -95,6 +107,12 @@ const SearchUsers = () => {
                       onClick={() => acceptFriendRequest(request._id)}
                     >
                       Accept
+                    </button>
+                    <button
+                      className="text-sm px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                      onClick={() => handleRejectRequest(request._id)}
+                    >
+                      Reject
                     </button>
                   </div>
                 ))
@@ -127,7 +145,8 @@ const SearchUsers = () => {
         {users.length > 0 ? (
           users.map((user) => (
             <li key={user._id} className="py-2 flex justify-between items-center">
-              <span>{user.username} ({user.email})</span>
+              {/* <span>{user.username} ({user.email})</span> */}
+              <span>{user.username}</span>
               <button
                 className="text-sm px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600"
                 onClick={() => sendFriendRequest(user._id)}

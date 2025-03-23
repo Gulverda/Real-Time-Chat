@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import PropTypes from "prop-types";
 
-import NotificationIcon from "../../assets/Notification.svg";
 import ProfileIcon from "../../assets/Profile.svg"
 
 
@@ -81,9 +80,6 @@ const Navbar = () => {
             <div className="hidden lg:flex justify-end">
             {user && (
                 <div className="flex w-[80px] items-center gap-[12px]">
-                  <Link to="/notifications">
-                    <img src={NotificationIcon} alt="Notification Icon" className="w-6 h-6" />
-                  </Link>
                   <Link to="/profile">
                     <img src={ProfileIcon} alt="Profile Icon" className="w-6 h-6 items-center flex justify-center" />
                   </Link>

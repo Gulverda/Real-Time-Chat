@@ -5,6 +5,7 @@ import Login from "./Auth/Login";
 import Register from "./Auth/Register";  // Import Register component
 import AuthContext from "./context/AuthContext";
 import Navbar from "./components/Navbar/Navbar";
+import Profile from "./pages/Profile";
 
 function App() {
     const { user, loading } = useContext(AuthContext);
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/" element={user ? <Chat /> : <Navigate to="/login" />} />
                     <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
                     <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+                    <Route path="/profile" element={user ? <Profile /> : <Register />} />
                 </Routes>
             </div>
         </Router>
