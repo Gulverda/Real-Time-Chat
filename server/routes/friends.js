@@ -124,5 +124,35 @@ router.post("/accept/:friendId", protect, async (req, res) => {
     }
 });
 
+// ✅ Reject friend request 
+router.delete("/reject/:friendId", protect, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const friendId = req.params.friendId;
+
+        const userFriendData = await Friend.findOne({ user: userId });
+
+        if (!userFriendData || !userFriendData.receivedRequests.includes(friendId)) {
+            return res.status(400).json({ message: "No pending request from this user." });
+        }
+
+        // Remove from receivedRequests list
+        await Friend.findOneAndUpdate(
+            { user: userId },
+            { $pull: { receivedRequests: friendId } }
+        );
+
+        // Remove from sender's pendingRequests list
+        await Friend.findOneAndUpdate(
+            { user: friendId },
+            { $pull: { pendingRequests: userId } }
+        );
+
+        res.status(200).json({ message: "Friend request rejected successfully." });
+    } catch (error) {
+        console.error("Error rejecting friend request:", error);
+        res.status(500).json({ message: "Server error." });
+    }
+});
 
 export default router;

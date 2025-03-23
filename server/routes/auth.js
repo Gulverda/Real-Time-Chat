@@ -2,6 +2,8 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { protect } from "../middleware/authMiddleware.js";
+
 
 const router = express.Router();
 
@@ -57,6 +59,37 @@ router.get("/verify", async (req, res) => {
         res.status(401).json({ error: "Invalid or expired token" });
     }
 });
+
+
+// Update Profile - Change Username
+router.put("/update-profile", protect, async (req, res) => {
+    const { username } = req.body;
+    const userId = req.user.id; 
+
+    if (!username) {
+        return res.status(400).json({ error: "Username is required" });
+    }
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Update username if different from current one
+        if (user.username !== username) {
+            user.username = username;
+            await user.save();
+            res.json({ message: "Username updated successfully!" });
+        } else {
+            res.status(400).json({ message: "New username is the same as the old one" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 
 export default router;
