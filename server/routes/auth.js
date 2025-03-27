@@ -91,5 +91,37 @@ router.put("/update-profile", protect, async (req, res) => {
 });
 
 
+// Change Password
+router.put("/change-password", protect, async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!oldPassword || !newPassword) {
+        return res.status(400).json({ error: "Both old and new passwords are required" });
+    }
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        // Compare old password
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) return res.status(400).json({ error: "Old password is incorrect" });
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ message: "Password updated successfully!" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 
 export default router;
