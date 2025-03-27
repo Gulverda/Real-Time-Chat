@@ -61,7 +61,7 @@ return (
             <SearchUsers />
 <div className="max-w-[800px] w-full p-4 bg-white shadow-lg rounded-lg md:flex grid h-[500px]">
     {/* Friends List */}
-    <div className="w-1/3 p-3 border-r border-gray-300 bg-gray-100 overflow-y-auto">
+    <div className="md:w-1/3 w-full p-3 border-r border-gray-300 bg-gray-100 overflow-y-auto">
         <h4 className="text-xl font-semibold mb-2">Friends</h4>
         {onlineUsers.length > 0 ? (
             onlineUsers.map((friend) => (
@@ -106,7 +106,7 @@ return (
     </div> */}
 
     {/* Chat Section */}
-    <div className="w-2/3 flex flex-col p-4">
+    <div className="md:w-2/3 w-full flex flex-col p-4">
         <h2 className="text-2xl font-bold text-center mb-4">Private Messages</h2>
 
         {/* Chat Messages */}

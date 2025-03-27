@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
 
-const API_URL = import.meta.VITE_API || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
 
 
 export const AuthProvider = ({ children }) => {

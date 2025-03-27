@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = import.meta.VITE_API || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
 
 const Register = () => {
     const [username, setUsername] = useState("");

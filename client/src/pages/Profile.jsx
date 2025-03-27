@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = import.meta.VITE_API || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
 
 
 const Profile = () => {
