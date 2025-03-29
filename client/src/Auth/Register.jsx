@@ -30,7 +30,7 @@ const Register = () => {
     return (
         <div className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
-            {message && <p className="text-red-500 text-sm mb-4 text-center">{message}</p>}
+            {message && <p className="text-green-600 text-sm mb-4 text-center">{message}</p>}
             <form onSubmit={handleRegister}>
                 <input 
                     type="text" 

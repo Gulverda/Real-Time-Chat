@@ -83,14 +83,14 @@ const SearchUsers = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg">
+    <div className="p-6 bg-[#FDFDFF] shadow-sm border border-[#E1E2FF] rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Search Users</h2>
         <div className="relative">
           <button onClick={() => setShowNotifications((prev) => !prev)}>
             <BellIcon className="w-6 h-6 text-gray-600" />
             {receivedRequests.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-[#5D5FEF] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                 {receivedRequests.length}
               </span>
             )}
@@ -102,8 +102,9 @@ const SearchUsers = () => {
                 receivedRequests.map((request) => (
                   <div key={request._id} className="flex justify-between items-center py-1 border-b">
                     <span>{request.username || "Unknown User"}</span>
+                    <div className="accept_reject_buttons flex gap-2">
                     <button
-                      className="text-sm px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                      className="text-sm px-3 py-1 bg-[#5D5FEF] text-white rounded-lg hover:bg-blue-600"
                       onClick={() => acceptFriendRequest(request._id)}
                     >
                       Accept
@@ -114,6 +115,7 @@ const SearchUsers = () => {
                     >
                       Reject
                     </button>
+                    </div>
                   </div>
                 ))
               ) : (
@@ -126,18 +128,31 @@ const SearchUsers = () => {
       <div className="flex items-center space-x-2 mb-4">
         <input
           type="text"
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 p-2 border border-[#E1E2FF] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E1E2FF]"
           placeholder="Enter username..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="px-4 py-2 bg-[#5D5FEF] text-white rounded-lg hover:bg-[#7275cb] flex items-center justify-center"
           onClick={searchUsers}
           disabled={loading}
         >
-          {loading ? "Searching..." : "Search"}
+          {loading ? "..." : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 256 256"
+              width="16"
+              height="25"
+              fill="white"
+            >
+              <g transform="scale(8.53333,8.53333)">
+                <path d="M13,3c-5.511,0 -10,4.489 -10,10c0,5.511 4.489,10 10,10c2.39651,0 4.59738,-0.85101 6.32227,-2.26367l5.9707,5.9707c0.25082,0.26124 0.62327,0.36648 0.97371,0.27512c0.35044,-0.09136 0.62411,-0.36503 0.71547,-0.71547c0.09136,-0.35044 -0.01388,-0.72289 -0.27512,-0.97371l-5.9707,-5.9707c1.41266,-1.72488 2.26367,-3.92576 2.26367,-6.32227c0,-5.511 -4.489,-10 -10,-10zM13,5c4.43012,0 8,3.56988 8,8c0,4.43012 -3.56988,8 -8,8c-4.43012,0 -8,-3.56988 -8,-8c0,-4.43012 3.56988,-8 8,-8z"></path>
+              </g>
+            </svg>
+          )}
         </button>
+
       </div>
       {message && <p className="text-red-500 text-sm">{message}</p>}
       <h3 className="font-semibold mt-4">Found Users</h3>
