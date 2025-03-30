@@ -80,7 +80,7 @@ const Profile = () => {
     if (!user) return <p className="text-center text-gray-500">Loading...</p>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="max-w-4xl w-full mt-20 mx-auto p-6 bg-[#FDFDFF] shadow-sm border border-[#DFDFFF] rounded-lg">
             <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Profile Page</h2>
             
             <div className="mb-4 text-center">
@@ -95,8 +95,16 @@ const Profile = () => {
                     placeholder="Enter your new username"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
+            </div>
+            <div className="text-left">
+                <button 
+                    onClick={handleUpdate} 
+                    className="w-full sm:w-auto py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    Update
+                </button>
             </div>
 
             <div className="mb-6">
@@ -107,7 +115,7 @@ const Profile = () => {
                     placeholder="Enter your old password"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
             </div>
 
@@ -119,7 +127,7 @@ const Profile = () => {
                     placeholder="Enter your new password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
             </div>
 
@@ -131,20 +139,20 @@ const Profile = () => {
                     placeholder="Confirm your new password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
             </div>
             
-            <div className="text-center">
+            {/* <div className="text-center">
                 <button 
                     onClick={handleUpdate} 
                     className="w-full sm:w-auto py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
                 >
                     Update
                 </button>
-            </div>
+            </div> */}
 
-            <div className="text-center mb-4">
+            <div className="text-left mb-4">
                 <button 
                     onClick={handleChangePassword} 
                     className="w-full sm:w-auto py-3 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300"
