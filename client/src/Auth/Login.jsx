@@ -23,7 +23,7 @@ const Login = () => {
     };
 
     return (
-        <div className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+        <div className="max-w-sm mx-auto mt-10 p-6 bg-[#FDFDFF] border border-[#E1E2FF] shadow-sm rounded-lg">
             <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <input
@@ -31,19 +31,19 @@ const Login = () => {
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 mb-4 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
             />
             <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 mb-4 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
             />
             <button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
+                className="w-full p-3 bg-[#5D5FEF] text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
             >
                 {loading ? "Logging in..." : "Login"}
             </button>

@@ -28,7 +28,7 @@ const Register = () => {
     };
 
     return (
-        <div className="max-w-sm mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+        <div className="max-w-sm mx-auto mt-10 p-6 bg-[#FDFDFF] border border-[#E1E2FF] shadow-sm rounded-lg">
             <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
             {message && <p className="text-green-600 text-sm mb-4 text-center">{message}</p>}
             <form onSubmit={handleRegister}>
@@ -37,14 +37,14 @@ const Register = () => {
                     placeholder="Username" 
                     value={username} 
                     onChange={(e) => setUsername(e.target.value)} 
-                    className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 mb-4 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
                 <input 
                     type="password" 
                     placeholder="Password" 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
-                    className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 mb-4 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
                 <input 
                     type="password" 
@@ -52,11 +52,11 @@ const Register = () => {
                     value={confirmPassword} 
                     onChange={(e) => setConfirmPassword(e.target.value)} 
                     required
-                    className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 mb-4 border border-[#A5A6F6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A5A6F6]"
                 />
                 <button 
                     type="submit"
-                    className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    className="w-full p-3 bg-[#5D5FEF] text-white rounded-lg hover:bg-blue-600"
                 >
                     Register
                 </button>

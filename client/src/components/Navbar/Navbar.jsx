@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import PropTypes from "prop-types";
 
-import ProfileIcon from "../../assets/Profile.svg"
+import ProfileIcon from "../../assets/Profile.svg";
+import logo from "../../assets/LogoL.png"
 
 
 const Navbar = () => {
@@ -16,12 +17,16 @@ const Navbar = () => {
         <div className="relative flex items-center justify-between w-full">
           {/* Logo */}
           <div className="px-4">
-            <Link to="/" className="block w-full py-5">
+            <Link to="/" className="w-full py-5 flex gap-3 items-center">
               <img
-                src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-white.svg"
+                // src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-white.svg"
+                src={logo}
                 alt="logo"
-                className="block"
+                className="block w-15 h-10"
               />
+                <h1 className="w-[130px] font-semibold text-[#E1E2FF] text-[18px]">
+                Online Chat
+                </h1>
             </Link>
           </div>
 

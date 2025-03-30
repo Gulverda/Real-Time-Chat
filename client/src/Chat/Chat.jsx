@@ -63,7 +63,7 @@ return (
             <SearchUsers />
 <div className="max-w-[800px] w-full p-4 bg-[#FDFDFF] shadow-sm border border-[#E1E2FF] rounded-lg md:flex grid h-[500px]">
     {/* Friends List */}
-    <div className="md:w-1/3 w-full p-3 border-r border-gray-300 bg-[#FDFDFF] overflow-y-auto">
+    <div className="md:w-1/3 w-full p-3 border-r border-[#E1E2FF] bg-[#FDFDFF] overflow-y-auto">
         <h4 className="text-xl font-semibold mb-2">Friends</h4>
         {onlineUsers.length > 0 ? (
             onlineUsers.map((friend) => (
