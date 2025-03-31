@@ -13,7 +13,8 @@ dotenv.config();
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
+  cors: { origin: ["http://localhost:5173", "https://real-time-chat-mu.vercel.app"],
+  methods: ["GET", "POST"] },
 });
 const onlineUsers = new Map();
 
