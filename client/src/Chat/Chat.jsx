@@ -48,13 +48,33 @@ const Chat = () => {
         }
     };
 
-    const sendPrivateMessage = () => {
-        if (!message.trim() || !recipient) return;
 
-        socket.emit("sendPrivateMessage", { sender: user.username, recipient, message });
-        setMessage("");
-        setSentMessages((prev) => new Set(prev).add(recipient));
-    };
+    useEffect(() => {
+        if (!user) return;
+    
+        const handleNewMessage = (newMessage) => {
+            setMessages((prevMessages) => [...prevMessages, newMessage]); 
+        };
+    
+        socket.on("receivePrivateMessage", handleNewMessage);
+    
+        return () => {
+            socket.off("receivePrivateMessage", handleNewMessage);
+        };
+    }, [user]);
+    
+
+const sendPrivateMessage = () => {
+    if (!message.trim() || !recipient) return;
+
+    const newMessage = { username: user.username, recipient, message };
+    setMessages((prevMessages) => [...prevMessages, newMessage]); // მესიჯის მყისიერი დამატება
+
+    socket.emit("sendPrivateMessage", newMessage);
+    setMessage("");
+    setSentMessages((prev) => new Set(prev).add(recipient));
+};
+
 
     if (!user) return <h2 className="text-center text-xl font-semibold">Please Login to Chat</h2>;
 
