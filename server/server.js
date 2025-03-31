@@ -38,17 +38,15 @@ io.on("connection", (socket) => {
 
   socket.on("sendPrivateMessage", async ({ sender, recipient, message }) => {
     try {
-        const newMessage = new Message({ username: sender, recipient, message });
-        await newMessage.save();
- 
-        // Send message to both sender and recipient (if both are online)
-        io.to(onlineUsers.get(recipient)).emit("receivePrivateMessage", newMessage);
-        socket.emit("receivePrivateMessage", newMessage); // Also send to sender
+      const newMessage = new Message({ username: sender, recipient, message });
+      await newMessage.save();
+      
+      io.to(onlineUsers.get(recipient)).emit("receivePrivateMessage", newMessage);
+      socket.emit("receivePrivateMessage", newMessage); // Also send to sender
     } catch (err) {
-        console.error("Error sending private message:", err);
+      console.error("Error sending private message:", err);
     }
- });
- 
+  });
   
 
   // User joins chat
