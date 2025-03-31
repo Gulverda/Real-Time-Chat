@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import LoadingSpinner from "../components/Loading/LoadingSpinner";
 
 const API_URL = import.meta.env.VITE_API || "http://localhost:5000";
 
@@ -77,7 +78,7 @@ const Profile = () => {
     };
     
 
-    if (!user) return <p className="text-center text-gray-500">Loading...</p>;
+    if (!user) return <LoadingSpinner />;
 
     return (
         <div className="max-w-4xl w-full mt-20 mx-auto p-6 bg-[#FDFDFF] shadow-sm border border-[#DFDFFF] rounded-lg">

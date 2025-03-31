@@ -6,11 +6,12 @@ import Register from "./Auth/Register";  // Import Register component
 import AuthContext from "./context/AuthContext";
 import Navbar from "./components/Navbar/Navbar";
 import Profile from "./pages/Profile";
+import LoadingSpinner from "./components/Loading/LoadingSpinner";
 
 function App() {
     const { user, loading } = useContext(AuthContext);
 
-    if (loading) return <h2>Loading...</h2>;
+    if (loading) return <LoadingSpinner />;
 
     return (
         <Router>

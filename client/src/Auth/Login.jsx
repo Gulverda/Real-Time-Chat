@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import LoadingSpinner from "../components/Loading/LoadingSpinner";
 
 const Login = () => {
     const { login } = useContext(AuthContext);
@@ -48,7 +49,8 @@ const Login = () => {
                 disabled={loading}
                 className="w-full p-3 bg-[#5D5FEF] text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
             >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? <LoadingSpinner /> : null}
+                Login
             </button>
         </div>
     );
