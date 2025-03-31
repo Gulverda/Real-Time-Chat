@@ -10,15 +10,18 @@ const Login = () => {
 
     const handleLogin = async () => {
         setError("");
-        setLoading(true);
-    
-        const res = await login(username, password); // Now `res` is an object with `success` and `error`
-        setLoading(false);
-    
+        setLoading(true);  
+
+        const res = await login(username, password);
+
+        console.log(res);  
+
+        setLoading(false); 
+
         if (!res.success) {
             setError(res.error); // ✅ Set error message
         } else {
-            window.location.reload(); // ✅ Refresh the page after successful login
+            window.location.href = "/";  // Redirect to home page after successful login
         }
     };
 

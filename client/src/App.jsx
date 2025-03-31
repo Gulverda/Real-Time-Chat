@@ -17,10 +17,10 @@ function App() {
             <Navbar />
             <div className="App flex w-full justify-center">
                 <Routes>
-                    <Route path="/" element={user ? <Chat /> : <Navigate to="/login" />} />
-                    <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-                    <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-                    <Route path="/profile" element={user ? <Profile /> : <Register />} />
+                    <Route path="/" element={user ? <Chat /> : <Navigate replace to="/login" />} />
+                    <Route path="/login" element={!user ? <Login /> : <Navigate replace to="/" />} />
+                    <Route path="/register" element={!user ? <Register /> : <Navigate replace to="/" />} />
+                    <Route path="/profile" element={user ? <Profile /> : <Navigate replace to="/login" />} />
                 </Routes>
             </div>
         </Router>
