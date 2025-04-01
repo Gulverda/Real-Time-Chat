@@ -36,55 +36,58 @@ mongoose.connection.on("disconnected", () => console.log("MongoDB Disconnected �
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
+  // **მომხმარებლის ჩართვა და შენახვა**
+  socket.on("userJoined", (username) => {
+    if (!username) return;
+    onlineUsers.set(username, socket.id);
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.keys())); // მხოლოდ user-ების სია
+    console.log(`${username} connected with ID: ${socket.id}`);
+  });
+
+  // **პირადი მესიჯების გაგზავნა**
   socket.on("sendPrivateMessage", async ({ sender, recipient, message }) => {
     try {
       const newMessage = new Message({ username: sender, recipient, message });
       await newMessage.save();
-      
-      io.to(onlineUsers.get(recipient)).emit("receivePrivateMessage", newMessage);
-      socket.emit("receivePrivateMessage", newMessage); // Also send to sender
+
+      const recipientSocketId = onlineUsers.get(recipient);
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit("receivePrivateMessage", newMessage); // პირადი მესიჯი ადრესატისთვის
+      }
+
+      // გამგზავნსაც უგზავნით შეტყობინებას, რომ მყისიერად გამოჩნდეს
+      socket.emit("receivePrivateMessage", newMessage);
     } catch (err) {
       console.error("Error sending private message:", err);
     }
   });
-  
 
-  // User joins chat
-  socket.on("userJoined", (username) => {
-    if (!username) return;
-    onlineUsers.set(socket.id, username);
-    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
-  });
-
-  // Listen for messages
-  socket.on("sendMessage", async ({ username, message }) => {
-    try {
-      const newMessage = new Message({ username, message });
-      await newMessage.save();
-      io.emit("receiveMessage", newMessage); // Send to all clients
-    } catch (err) {
-      console.error("Error saving message:", err);
-    }
-  });
-
-  // Disconnect
+  // **მომხმარებლის გასვლა**
   socket.on("disconnect", () => {
-    onlineUsers.delete(socket.id);
-    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
-    console.log(`User Disconnected: ${socket.id}`);
-  });
-
-  // User leaves chat explicitly
-  socket.on("userLeft", (username) => {
-    for (let [key, value] of onlineUsers) {
-      if (value === username) {
-        onlineUsers.delete(key);
+    let disconnectedUser = null;
+    for (let [username, id] of onlineUsers) {
+      if (id === socket.id) {
+        disconnectedUser = username;
+        onlineUsers.delete(username);
         break;
       }
     }
-    io.emit("updateOnlineUsers", Array.from(onlineUsers.values()));
+
+    if (disconnectedUser) {
+      io.emit("updateOnlineUsers", Array.from(onlineUsers.keys()));
+      console.log(`${disconnectedUser} disconnected`);
+    }
+  });
+
+  socket.on("userLeft", (username) => {
+    if (onlineUsers.has(username)) {
+      onlineUsers.delete(username);
+      io.emit("updateOnlineUsers", Array.from(onlineUsers.keys()));
+      console.log(`${username} left the chat`);
+    }
   });
 });
+
 
 // Routes
 app.use("/api/auth", authRoutes);
