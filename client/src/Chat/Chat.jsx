@@ -100,7 +100,7 @@ const Chat = () => {
                             <div
                                 key={friend._id} 
                                 onClick={() => handleFriendClick(friend.username)}
-                                className="cursor-pointer border border-[#E1E2FF] my-2 text-[000000] hover:underline flex items-center p-2 rounded-md hover:bg-gray-200"
+                                className="cursor-pointer border border-[#E1E2FF] my-2 text-[#000000] hover:underline flex items-center p-2 rounded-md hover:bg-gray-200"
                             >
                                 <span className="flex items-center gap-2">
                                     <img src={accountIcon} alt="account Icon" className="w-10 h-10" />
