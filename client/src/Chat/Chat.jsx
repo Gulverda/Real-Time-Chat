@@ -38,9 +38,9 @@ const Chat = () => {
     
         socket.emit("userJoined", user.username);
     
-        socket.on("updateOnlineUsers", (users) => {
-            setOnlineUsers(users);
-        });
+        // socket.on("updateOnlineUsers", (users) => {
+        //     setOnlineUsers(users);
+        // });
     
         socket.on("receivePrivateMessage", (newMessage) => {
             if (newMessage.recipient === user.username || newMessage.username === user.username) {

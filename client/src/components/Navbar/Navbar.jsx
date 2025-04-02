@@ -4,7 +4,8 @@ import AuthContext from "../../context/AuthContext";
 import PropTypes from "prop-types";
 
 import ProfileIcon from "../../assets/Profile.svg";
-import logo from "../../assets/LogoL.png"
+import ExitIcon from "../../assets/Exit.svg";
+import logo from "../../assets/LogoL.png";
 
 
 const Navbar = () => {
@@ -14,7 +15,7 @@ const Navbar = () => {
   return (
     <header className="flex justify-center w-full items-center bg-[#5D5FEF]">
       <div className="container flex justify-center max-w-[1440px]">
-        <div className="relative flex items-center justify-between w-full">
+        <div className="relative z-10 flex items-center justify-between w-full">
           {/* Logo */}
           <div className="px-4">
             <Link to="/" className="w-full py-5 flex gap-3 items-center">
@@ -55,10 +56,16 @@ const Navbar = () => {
 
               {/* Authentication Buttons for Mobile */}
               <div className="mt-4 flex flex-col gap-3 lg:hidden">
+              {user && (
+                  <Link to="/profile">
+                    <h2 className="px-7 py-3 text-center text-base w-full font-medium text-[#5D5FEF] border border-[#A5A6F6] bg-[#FDFDFF] hover:bg-[#A5A6F6] hover:text-[#FDFDFF] rounded-md transition-all duration-200">Profile</h2>
+                    {/* <img src={ProfileIcon} alt="Profile Icon" className="w-6 h-6 items-center flex justify-center" /> */}
+                  </Link>
+              )}
                 {user ? (
                   <button
                     onClick={logout}
-                    className="px-7 py-3 text-base font-medium text-white bg-red-500 hover:bg-red-600 rounded-md transition-all duration-200"
+                    className="px-7 py-3 text-base font-medium border border-red-600 text-red-600 bg-[#FDFDFF] hover:bg-red-600 hover:text-[#FDFDFF] rounded-md transition-all duration-200"
                   >
                     Logout
                   </button>
@@ -94,10 +101,10 @@ const Navbar = () => {
               {user ? (
                 <button
                   onClick={logout}
-                  className="px-7 py-3 text-base font-medium text-white bg-red-500 hover:bg-red-600 rounded-md transition-all duration-200"
-                >
-                  Logout
-                </button>
+                  className="px-7 py-3 text-base font-medium rounded-md transition-all duration-200"
+                  >
+                    <img src={ExitIcon} alt="Exit Icon" className="w-8 h-8 items-center flex justify-center" />
+                    </button>
               ) : (
                 <div className="flex gap-3">
                   <Link
